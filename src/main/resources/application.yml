@@ -1,0 +1,48 @@
+banner:
+  location: config/banner.txt
+  encoding: utf-8
+server:
+  context-path: /
+  session-timeout: 3600
+  tomcat:
+    max-threads: 1000
+    min-spare-threads: 30
+    max-http-post-size: -1
+  port: 8080
+  uri-encoding: utf-8
+security:
+  basic:
+    enabled: false
+spring:
+  resources:
+     chain:
+       strategy:
+         content:
+           enabled: true
+           paths: /**
+  thymeleaf:
+    mode: LEGACYHTML5
+    cache: false
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+    generator:
+      WRITE_NUMBERS_AS_STRINGS: true    
+  profiles:
+    active: dev
+  http:
+    multipart:
+      max-file-size: 100Mb
+      max-request-size: 100Mb
+  devtools:
+    restart:
+      enabled: false  
+#身份证识别图片保存路径
+idcard:
+  step:
+    dir: "F:/face"
+    show: "true"
+  temp:
+    dir: "F:/face/1" 
+
+ 

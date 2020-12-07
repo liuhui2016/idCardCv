@@ -1,0 +1,1 @@
+docker build -f Dockerfile -t autotest:v1.0 .

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html class="white-bg">
+<head>
+    <meta charset="utf-8">
+    <title>人员身份证号码识别</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/js/plugins/layui-256/css/layui.css"/>
+    <link rel="stylesheet" href="/js/plugins/mui/css/mui.min.css">
+    <link rel="stylesheet" href="/js/plugins/cropper/cropper.css">
+    <style>
+        #choice-btn {
+            display: inline-block;
+            height: 38px;
+            line-height: 38px;
+            padding: 0 18px;
+            background-color: #009688;
+            color: #fff;
+            white-space: nowrap;
+            text-align: center;
+            font-size: 14px;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="white-bg" style="padding-left: 10px;padding-top: 50px;text-align: center;">
+<header class="mui-bar mui-bar-nav">
+	<h1 class="mui-title">身份证照片</h1> 
+</header>
+<div style="margin: 10px;"> 
+    <div class="layui-row">
+    	<div style="overflow:hidden;height:563px;width:473px;margin: auto;">
+			<div style="float:left; z-index:999;position:absolute;">
+	            <div id="img-preview" style="height: 100px;width:185px; overflow: hidden;border: 1px dashed black;">
+	            </div>
+	        </div>
+	        <div >
+	         <!-- <div id="readyimg"
+	                 style="height:384px ;width:290px ;border: 1px dashed black;background-color: rgb(247, 247, 247);">
+	                <img id="img" src="" alt="" style="display:none">
+	            </div> -->
+	             <div id="readyimg"
+	                 style="float: left;height:560px;width:470px ;border: 1px dashed black;background-color: rgb(247, 247, 247);background:url(/img/bg.jpg);background-size:100% 100%;">
+	                <img id="img" src="" alt="" style="display:none">
+	            </div> 
+	        </div>
+        </div>
+    </div> 
+    <div class="layui-hide oper-btn" style="margin-top: 10px;">
+
+        <button style="width: 70px;background-color: #22ace6; color: #fff; border: 0;" type="button" class="mui-btn mui-icon mui-icon-arrowleft" cropper-event="rotate" data-option="-2"
+                title="向左旋转"> 左旋
+        </button>
+        &nbsp;&nbsp;&nbsp;
+        <button style="width: 70px;background-color: #22ace6; color: #fff; border: 0;" type="button" class="mui-btn mui-icon mui-icon-arrowright" cropper-event="rotate" data-option="2"
+                title="向右旋转"> 右旋
+        </button>
+        &nbsp;&nbsp;&nbsp;
+        <button style="width: 70px;background-color: #22ace6; color: #fff; border: 0;" type="button" class="mui-btn mui-icon mui-icon-reload" cropper-event="reset"
+                title="恢复初始图片">重置
+        </button>
+        &nbsp;&nbsp;&nbsp;
+        <button style="width: 70px;background-color: #22ace6; color: #fff; border: 0;" type="button" class="mui-btn mui-icon mui-icon-checkmarkempty" id="keep-save" cropper-event="confirmSave">识别
+        </button>
+
+    </div>
+     <div style="margin-top: 10px;">
+        <label for="cropper_imgUpload">
+            <span id="choice-btn" class="mui-btn"><i class="mui-icon mui-icon-pengyouquan"></i>拍照</span>
+        </label>
+        <input type="file" id="cropper_imgUpload" name="file" style="display:none" accept="image/*" capture="camera">
+    </div> 
+</div>
+
+<script src="/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="/js/plugins/lodash/lodash.js"></script>
+<script src="/js/plugins/layui-256/layui.all.js" type="text/javascript" charset="utf-8"></script>
+<script src="/js/plugins/mui/js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+    layui.config({
+        base: '/js/plugins/cropper/'
+    }).extend({
+        cropper: 'cropper'
+    }).use(['element', 'layer', 'cropper', 'jquery', 'jqcropper'], function () {
+        var element = layui.element;
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var cropper = layui.cropper;
+
+        var imageEle = $("#img")
+            ,preview = '#img-preview'
+            , file = $("input[name='file']")
+            , uploadImageMaxSize = 20480 //文件上传大小限制
+            , options = {
+            aspectRatio: 158 / 100, //控制裁剪框大小
+            viewMode: 1,
+            autoCropArea:0.95, //框的靠近边缘的比例
+            preview: preview,
+            dragMode: 'none',
+            responsive: false,
+            restore: false
+            // cropBoxMovable:false,
+            // cropBoxResizable:false,
+        };
+        // 找到上传图片的input标签绑定change事件
+        $("#cropper_imgUpload").change(function () {
+            $(".oper-btn").removeClass("layui-hide");
+            // 1. 创建一个读取文件的对象
+            $("#readyimg").empty();
+            $("#readyimg").append('<img id="img" src="" alt="" style="display:none">');
+            imageEle = $("#img");
+            var fileReader = new FileReader();
+            fileReader.readAsDataURL(this.files[0]);
+            fileReader.onload = function () {
+                // 2. 等上一步读完文件之后才 把图片加载到img标签中
+                imageEle.attr("src", fileReader.result); //图片链接（base64）
+                imageEle.cropper(options);
+                var fs = document.getElementById('cropper_imgUpload');
+                console.log(fs.files);
+                if(fs.files.length > 0) {
+                    fs.value=null
+                }
+
+            };
+        });
+
+        $(".mui-btn").on('click', function () {
+            var event = $(this).attr("cropper-event");
+            //监听确认保存图像
+            if (event === 'confirmSave') {
+                var base64url = imageEle.cropper("getCroppedCanvas").toDataURL('image/png');
+                shiBie(base64url);
+
+            } else if (event === 'rotate') {
+                //监听旋转
+                var option = $(this).attr('data-option');
+                imageEle.cropper('rotate', option);
+            } else if (event === 'reset') {
+                //重设图片
+                imageEle.cropper('reset');
+            }
+        });
+    });
+    function shiBie(imgBase){
+        console.log(imgBase);
+       // layer.msg("开始识别身份证号码");
+        var indx = layer.load();
+        $.ajax({
+        	type: 'POST',
+            url:"/api/idCard/scanCard",
+            data:{'svg_xml':imgBase},
+            success:function (data){
+            	if(data.code == 200){
+            		layer.msg(data.data);
+            	}else{
+            		layer.msg(data.msg);
+            	} 
+            	layer.close(indx);
+                console.log(data.data);
+            },
+            error(data){
+            	layer.close(indx);
+                layer.msg(data ? data.msg : "系统开小差");
+            }
+        });
+    } 
+</script>
+</body>
+</html>

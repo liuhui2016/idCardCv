@@ -1,0 +1,15 @@
+﻿.mui-content .mui-indexed-list .mui-indexed-list-inner .mui-table-view{}
+.mui-content .mui-indexed-list .mui-indexed-list-inner .mui-table-view .mui-table-view-divider.mui-indexed-list-group {padding-top:8px; padding-bottom: 8px; }
+.mui-table-view-cell.mui-checkbox.mui-left, .mui-table-view-cell.mui-radio.mui-left {
+    padding-left: 58px;
+    border: 0px solid red;
+    border-radius: 5px;
+    width: 91%;
+    margin: 5px 15px;
+    background-color: #f2f2f2;
+   }
+   .mui-table-view-cell:after{height:0;}
+
+   .mui-indexed-list{
+       overflow: visible;
+   }
